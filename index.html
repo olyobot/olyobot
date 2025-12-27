@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Earn Money App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:Poppins,Arial;}
+body{
+  margin:0;
+  background:linear-gradient(180deg,#07001a,#120035,#07001a);
+  color:#fff;
+}
+.container{padding:15px;padding-bottom:120px;}
+.card{
+  background:linear-gradient(135deg,#1b0b46,#2f1674);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);
+}
+h3{
+  margin:0 0 10px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.icon3d{width:32px;height:32px;}
+.green{color:#22f5a5;}
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(90deg,#7f5cff,#a855f7);
+  color:#fff;
+  font-size:16px;
+  font-weight:bold;
+}
+.progress{
+  width:100%;
+  height:8px;
+  background:#2c1a5e;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:6px;
+}
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#00ffa3,#00c3ff);
+}
+.hidden{display:none;}
+
+.nav{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  display:flex;
+  background:#0c0620;
+  border-top:1px solid #2c1a5e;
+}
+.nav button{
+  flex:1;
+  padding:8px 0;
+  border:none;
+  background:none;
+  color:#aaa;
+  font-size:12px;
+}
+.nav button img{
+  width:34px;
+  display:block;
+  margin:0 auto 4px;
+}
+.nav .active{color:#7f5cff;}
+
+input,select{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+}
+.withdraw-note{
+  background: linear-gradient(180deg,#2a166f,#140735);
+  padding: 16px;
+  border-radius: 14px;
+  margin-top: 15px;
+  color: #fff;
+}
+.withdraw-note h3{
+  text-align: center;
+  margin-bottom: 12px;
+}
+.withdraw-note ul{
+  padding-left: 18px;
+}
+.withdraw-note ul li{
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.daily-task-list{
+  margin-top: 12px;
+}
+.task-item{
+  background:#1f1252;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:8px;
+  font-size:14px;
+  cursor:pointer;
+}
+.task-item:hover{
+  background:#6f4bff;
+}
+.dual-btn{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+.dual-btn button{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  font-weight:bold;
+  color:#fff;
+}
+.sell-btn{
+  background:linear-gradient(90deg,#ff4d4d,#ff0000);
+}
+.buy-btn{
+  background:linear-gradient(90deg,#00c3ff,#00ffa3);
+}
+
+
+</style>
+
+
+
+</head>
+<body>
+
+<div class="container">
+
+<!-- TASK -->
+<div id="home">
+  <div class="card">
+    <h3>
+      <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/942/942748.png">
+      Task
+    </h3>
+    <p>ID: <b id="uid"></b></p>
+    <p>Balance: TAKA <b class="green" id="balance">0</b>🎉</p>
+    <p>Daily Ads: <b><span id="watched">0</span>/50</b>🫧</p>
+    <p style="font-size:12px;opacity:.7;">6AM TO 6AM 🕑</p>
+    <div class="progress"><span id="bar"></span></div>
+  </div>
+  <div class="card">
+    <button class="btn" onclick="watchAd()">▶ Watch Ad & Earn ৳ 0.10 🎁</button>
+<p id="adStatus" style="text-align:center;margin-top:8px;font-size:14px;"></p>
+
+  </div>
+
+  <div class="card">
+    <h3>
+      <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/1055/1055646.png">
+      Daily Task 10💡
+    </h3>
+    <p>Follow / Like / Subscribe / Join 🪁</p>
+    <p>Reward: <b class="green">৳ 0.20🏅</b></p>
+<div class="daily-task-list">
+
+  <div class="task-item" onclick="goTask('https://t.me/task1')">
+    ✅ Task 1 – Join Telegram Channel
+  </div>
+
+  <div class="task-item" onclick="goTask('https://youtube.com/task2')">
+    ✅ Task 2 – Subscribe YouTube
+  </div>
+
+  <div class="task-item" onclick="goTask('https://facebook.com/task3')">
+    ✅ Task 3 – Like Facebook Page
+  </div>
+
+  <div class="task-item" onclick="goTask('https://t.me/task4')">
+    ✅ Task 4 – Join Telegram Group
+  </div>
+
+  <div class="task-item" onclick="goTask('https://instagram.com/task5')">
+    ✅ Task 5 – Follow Instagram
+  </div>
+
+  <div class="task-item" onclick="goTask('https://t.me/task6')">
+    ✅ Task 6 – Join Backup Channel
+  </div>
+
+  <div class="task-item" onclick="goTask('https://youtube.com/task7')">
+    ✅ Task 7 – Like Video
+  </div>
+
+  <div class="task-item" onclick="goTask('https://facebook.com/task8')">
+    ✅ Task 8 – Share Post
+  </div>
+
+  <div class="task-item" onclick="goTask('https://t.me/task9')">
+    ✅ Task 9 – Join Partner Bot
+  </div>
+
+  <div class="task-item" onclick="goTask('https://t.me/task10')">
+    ✅ Task 10 – Join Premium Group
+  </div>
+
+</div>
+
+  </div>
+</div>
+
+
+
+<!-- INVITE -->
+<div id="invite" class="hidden">
+  <div class="card">
+    <h3>
+      <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/833/833472.png">
+      Invite
+    </h3>
+    <input id="refLink" readonly>
+    <br><br>
+    <button class="btn" onclick="copyRef()">Copy Referral Link</button>
+  </div>
+<div class="card">
+  <h3>
+    <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/732/732200.png">
+    GMAIL  
+  </h3>
+
+  <div class="dual-btn">
+    <button class="sell-btn" onclick="location.href='gmail-sell.html'">
+      SELL
+    </button>
+
+    <button class="buy-btn" onclick="location.href='gmail-buy.html'">
+      BUY
+    </button>
+  </div>
+</div>
+<div class="card">
+  <h3>
+    <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png">
+    FACEBOOK 
+  </h3>
+
+  <div class="dual-btn">
+    <button class="sell-btn" onclick="location.href='fb-sell.html'">SELL</button>
+    <button class="buy-btn" onclick="location.href='fb-buy.html'">BUY</button>
+  </div>
+</div>
+<div class="card">
+  <h3>
+    <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png">
+    TIKTOK 
+  </h3>
+
+  <div class="dual-btn">
+    <button class="sell-btn" onclick="location.href='tiktok-sell.html'">SELL</button>
+    <button class="buy-btn" onclick="location.href='tiktok-buy.html'">BUY</button>
+  </div>
+</div>
+<div class="card">
+  <h3>
+    <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
+    INSTAGRAM 
+  </h3>
+
+  <div class="dual-btn">
+    <button class="sell-btn" onclick="location.href='instagram-sell.html'">
+      SELL
+    </button>
+
+    <button class="buy-btn" onclick="location.href='instagram-buy.html'">
+      BUY
+    </button>
+  </div>
+</div>
+<div class="card">
+  <h3>
+    <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+    WHATSAPP
+  </h3>
+
+  <div class="dual-btn">
+    <button class="sell-btn" onclick="location.href='whatsapp-sell.html'">
+      SELL
+    </button>
+
+    <button class="buy-btn" onclick="location.href='whatsapp-buy.html'">
+      BUY
+    </button>
+  </div>
+</div>
+
+</div>
+
+
+
+<!-- WITHDRAW -->
+<div id="withdraw" class="hidden">
+  <div class="card">
+    <h3>
+      <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/1170/1170576.png">
+      Withdraw
+    </h3>
+
+    <input id="wallet" type="number" placeholder="Enter Wallet Number">
+    <br><br>
+
+    <input id="amount" type="number" placeholder="Enter amount">
+    <br><br>
+
+   <select id="method">
+  <option>Bkash</option>
+  <option>Nagad</option>
+</select>
+    <br><br>
+
+    <button class="btn" onclick="withdraw()">Submit Withdraw</button>
+  </div>
+<div class="withdraw-note">
+  <h3>⚠️ Important Withdraw Rules</h3>
+<li>প্রিয় ইউজার, কমপক্ষে <b>৳১০০ (BDT)</b> হলে তবেই আপনি উইথড্র করতে পারবেন।</li>
+<li>আপনার সকল আয় <b>বাংলাদেশি টাকা (BDT)</b> হিসেবেই গণনা করা হবে।</li>
+<li>নিয়ম মেনে কাজ করতে হবে, নিয়ম ভঙ্গ করলে কোনো পেমেন্ট দেওয়া হবে না।</li>
+<li>একাধিক অ্যাকাউন্ট, ফেক কাজ বা ভিপিএন ব্যবহার সম্পূর্ণ নিষিদ্ধ।</li>
+<li>কোনো প্রকার ফ্রড বা চিটিং প্রমাণিত হলে <b>অ্যাকাউন্ট স্থায়ীভাবে ব্লক</b> করা হবে।</li>
+<li>উইথড্র রিকুয়েস্ট দেওয়ার পর <b>২৪–৭২ ঘণ্টার মধ্যে</b> পেমেন্ট প্রসেস করা হবে।</li>
+<li>অ্যাপের নিয়ম যেকোনো সময় পরিবর্তন হতে পারে, নিয়মিত আপডেট চেক করুন।</li>
+
+</div>
+
+</div>
+
+
+
+<!-- PROFILE -->
+<div id="profile" class="hidden">
+  <div class="card">
+    <h3>
+      <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
+      Profile
+    </h3>
+    <p>User ID: <b id="pid"></b></p>
+    <p>Balance: TAKA <b class="green" id="pbalance"></b></p>
+    <p>Wallet: <b id="pwallet">Not Set</b></p>
+  </div>
+</div>
+
+
+
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="active" onclick="openPage('home',this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png">
+    TASK
+  </button>
+  <button onclick="openPage('invite',this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png">
+    INVITE
+  </button>
+  <button onclick="openPage('withdraw',this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/1170/1170576.png">
+    WITHDRAW
+  </button>
+  <button onclick="openPage('profile',this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
+    PROFILE
+  </button>
+</div>
+
+
+
+
+<script type="module">
+
+/* 🔥 Firebase SDK import */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  addDoc,
+  collection
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import {
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+/* 🔥 Firebase config */
+const firebaseConfig = {
+  apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
+  authDomain: "olyotaskbot-7019e.firebaseapp.com",
+  projectId: "olyotaskbot-7019e",
+  storageBucket: "olyotaskbot-7019e.appspot.com",
+  messagingSenderId: "384515918474",
+  appId: "1:384515918474:web:7535db60c5166639983b73"
+};
+
+/* 🔥 Firebase init */
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+let uid = null;
+let userRef = null;
+
+/* =========================
+   👇 এখান থেকেই তোমার আগের JS
+   ========================= */
+
+const uidEl=document.getElementById("uid");
+const balanceEl=document.getElementById("balance");
+const watchedEl=document.getElementById("watched");
+const bar=document.getElementById("bar");
+const refLink=document.getElementById("refLink");
+const walletInput=document.getElementById("wallet");
+const pwallet=document.getElementById("pwallet");
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { 
+    return;
+  }
+
+  uid = user.uid;
+
+  uidEl.innerText = uid;
+  document.getElementById("pid").innerText = uid;
+
+  userRef = doc(db, "users", uid);
+const refInput = document.getElementById("refLink");
+if (refInput) {
+  refInput.value =
+    location.origin + location.pathname + "?ref=" + uid;
+}
+ 
+  try {
+    await loadUser();
+// 🔗 REAL referral apply
+const urlParams = new URLSearchParams(window.location.search);
+const refUid = urlParams.get("ref");
+
+if (refUid && refUid !== uid) {
+  const userSnap = await getDoc(userRef);
+
+  if (userSnap.exists()) {
+    const udata = userSnap.data();
+
+    // ❌ already invited → stop
+    if (!udata.invitedBy) {
+
+      // 🔒 lock invite (REAL)
+      await updateDoc(userRef, {
+        invitedBy: refUid
+      });
+
+      // 🎁 bonus to referrer
+      const refUserRef = doc(db, "users", refUid);
+      const refSnap = await getDoc(refUserRef);
+
+      if (refSnap.exists()) {
+        await updateDoc(refUserRef, {
+          balance: (refSnap.data().balance || 0) + 5
+        });
+      }
+    }
+  }
+}
+    
+  } catch (e) {
+    alert("🔥 ERROR: " + e.message);
+    console.error(e);
+  }
+});
+
+signInAnonymously(auth);
+
+
+
+window.copyRef = function () {
+  const input = document.getElementById("refLink");
+  input.removeAttribute("readonly");
+  input.select();
+  input.setSelectionRange(0, 99999); // mobile support
+  document.execCommand("copy");
+  input.setAttribute("readonly", true);
+  alert("Referral link copied!");
+};
+
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+}
+function getToday() {
+  const d = new Date();
+  return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+}
+
+
+/* Load user */
+let balance = 0;
+let watched = 0;
+let dailyTaskData = {};
+
+async function loadUser(){
+  const snap = await getDoc(userRef);
+  if(snap.exists()){
+    const data = snap.data();
+balance = data.balance || 0;
+dailyTaskData = data.dailyTaskData || {};
+
+    const today = getToday();
+
+if (data.adDate !== today) {
+  watched = 0;
+
+  await updateDoc(userRef, {
+    watchedToday: 0,
+    adDate: today
+  });
+} else {
+  watched = data.watchedToday || 0;
+}
+
+  }else{
+    await setDoc(userRef,{
+  balance: 0,
+  watchedToday: 0,
+  adDate: getToday(),
+  dailyTaskData: {},
+  created: Date.now()
+});
+  }
+
+  balanceEl.innerText = balance;
+  watchedEl.innerText = watched;
+  document.getElementById("pbalance").innerText = balance;
+bar.style.width = (watched / 50 * 100) + "%";
+}
+
+
+/* Task */
+window.goTask = async function(url){
+  if(dailyTaskData[url]){
+    alert("এই Task আগেই করা হয়েছে");
+    window.open(url,"_blank");
+    return;
+  }
+
+  balance += 0.20;
+  dailyTaskData[url] = true;
+
+  await updateDoc(userRef,{
+    balance: balance,
+    dailyTaskData: dailyTaskData
+  });
+
+  balanceEl.innerText = balance;
+  document.getElementById("pbalance").innerText = balance;
+
+  alert("0.20 টাকা যোগ হয়েছে");
+  window.open(url,"_blank");
+}
+window.withdraw = async function () {
+  const amt = parseInt(document.getElementById("amount").value);
+  const wallet = document.getElementById("wallet").value;
+  const method = document.getElementById("method").value;
+if (amt < 100) {
+  alert("Minimum withdraw 100 taka");
+  return;
+}
+
+  if (amt > balance) {
+    alert("Balance কম");
+    return;
+  }
+
+  if (!wallet) {
+    alert("Wallet নাম্বার দিন");
+    return;
+  }
+
+  await addDoc(collection(db, "withdraws"), {
+    uid: uid,
+    amount: amt,
+    wallet: wallet,
+    method: method,
+    status: "pending",
+    time: Date.now()
+  });
+
+  alert("Withdraw request sent (pending approval)");
+};
+
+window.openPage = function(id){
+  document.querySelectorAll("#home, #invite, #withdraw, #profile")
+    .forEach(d => d.classList.add("hidden"));
+
+  document.getElementById(id).classList.remove("hidden");
+
+  document.querySelectorAll(".nav button")
+    .forEach(b => b.classList.remove("active"));
+
+  const btnMap = {
+    home: 0,
+    invite: 1,
+    withdraw: 2,
+    profile: 3
+  };
+  document.querySelectorAll(".nav button")[btnMap[id]]
+    .classList.add("active");
+};
+
+let adRunning = false;
+let adTimer = null;
+
+window.watchAd = async function () {
+if (watched >= 50) {
+  alert("আজকের Ad limit শেষ");
+  return;
+}
+
+  if (adRunning) return;
+
+  if (!userRef) {
+    alert("User not ready");
+    return;
+  }
+
+  adRunning = true;
+  const status = document.getElementById("adStatus");
+  status.innerText = "⏳ ১৫ সেকেন্ড Ad দেখো";
+
+  // 🔥 Show ad
+  if (typeof show_10362750 === "function") {
+    show_10362750();
+  } else {
+    status.innerText = "❌ Ad load হয়নি";
+    adRunning = false;
+    return;
+  }
+
+  // ⏱️ 15 sec wait
+  setTimeout(async () => {
+    const today = todayStr();
+    const adKey = uid + "_" + today + "_" + (watched + 1);
+    const adRef = doc(db, "ad_logs", adKey);
+
+    const snap = await getDoc(adRef);
+    if (snap.exists()) {
+      status.innerText = "⚠️ Reward already claimed";
+      adRunning = false;
+      return;
+    }
+
+    // ✅ Give reward (REAL)
+    watched += 1;
+balance += 0.10;
+
+await updateDoc(userRef,{
+  watchedToday: watched,
+  adDate: getToday(),
+  balance: balance
+});
+
+    watchedEl.innerText = watched;
+    balanceEl.innerText = balance;
+    document.getElementById("pbalance").innerText = balance;
+    bar.style.width = (watched / 50 * 100) + "%";
+
+    status.innerText = "✅ 0.10 টাকা যোগ হয়েছে";
+    adRunning = false;
+
+  }, 15000);
+};
+
+
+
+
+</script>
+
+
+<script src="//libtl.com/sdk.js"
+        data-zone="10362750"
+        data-sdk="show_10362750">
+</script>
+
+
+</body>
+</html>
