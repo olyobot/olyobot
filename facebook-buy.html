@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<title>Facebook Buy</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#12002b;
+  color:#fff;
+}
+.header{
+  padding:16px;
+  font-size:22px;
+  font-weight:bold;
+}
+.notice{
+  background:#3a1b6b;
+  margin:12px;
+  padding:12px;
+  border-radius:10px;
+  font-size:14px;
+}
+.item{
+  background:#2a0d4f;
+  margin:10px 12px;
+  padding:14px;
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.buyBtn{
+  background:#00e6a7;
+  color:#000;
+  border:none;
+  padding:8px 14px;
+  border-radius:20px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.result{
+  margin:12px;
+  background:#3a1b6b;
+  padding:14px;
+  border-radius:12px;
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">FACEBOOK BUY</div>
+
+<div class="notice">
+  প্রতি Facebook Account কিনতে <b>৳20</b> কাটা হবে
+</div>
+
+<div id="fbList"></div>
+<div id="resultBox" class="result"></div>
+
+<script type="module">
+/* ---------- IMPORT ---------- */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import {
+  getFirestore, collection, query, where, limit,
+  getDocs, doc, getDoc, updateDoc
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+/* ---------- FIREBASE CONFIG ---------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
+  authDomain: "olyotaskbot-7019e.firebaseapp.com",
+  projectId: "olyotaskbot-7019e",
+  storageBucket: "olyotaskbot-7019e.firebasestorage.app",
+  messagingSenderId: "384515918474",
+  appId: "1:384515918474:web:7535db60c5166639983b73"
+};
+
+/* ---------- INIT ---------- */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let uid = null;
+let balance = 0;
+let userRef = null;
+const PRICE = 20; // 🔥 এখানেই দাম বাড়ানো/কমানো
+
+/* ---------- AUTH ---------- */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    alert("Please login first");
+    return;
+  }
+
+  uid = user.uid;
+  userRef = doc(db, "users", uid);
+
+  const userSnap = await getDoc(userRef);
+  if (userSnap.exists()) {
+    balance = userSnap.data().balance || 0;
+  }
+
+  loadFacebooks();
+});
+
+/* ---------- LOAD FB ---------- */
+async function loadFacebooks() {
+  const q = query(
+    collection(db, "facebook_stock"),
+    where("sold", "==", false),
+    limit(10)
+  );
+
+  const snap = await getDocs(q);
+  const list = document.getElementById("fbList");
+  list.innerHTML = "";
+
+  if (snap.empty) {
+    list.innerHTML = "<p style='padding:12px;'>❌ কোনো Facebook নেই</p>";
+    return;
+  }
+
+  snap.forEach(docu => {
+    const d = docu.data();
+    const masked = d.email.substring(0,3) + "****";
+
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div>${masked}</div>
+      <button class="buyBtn" onclick="buyFB('${docu.id}')">BUY ৳${PRICE}</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+/* ---------- BUY FB ---------- */
+window.buyFB = async function (docId) {
+  if (balance < PRICE) {
+    alert("পর্যাপ্ত ব্যালেন্স নেই");
+    return;
+  }
+
+  const fRef = doc(db, "facebook_stock", docId);
+  const snap = await getDoc(fRef);
+
+  if (!snap.exists() || snap.data().sold) {
+    alert("এই Account আর নেই");
+    loadFacebooks();
+    return;
+  }
+
+  // balance minus
+  balance -= PRICE;
+  await updateDoc(userRef, { balance });
+
+  // mark sold
+  await updateDoc(fRef, {
+    sold: true,
+    soldTo: uid,
+    soldAt: Date.now()
+  });
+
+  const box = document.getElementById("resultBox");
+  box.style.display = "block";
+  box.innerHTML = `
+    <b>Email:</b> ${snap.data().email}<br>
+    <b>Password:</b> ${snap.data().pass}
+  `;
+
+  alert("৳"+PRICE+" কাটা হয়েছে");
+  loadFacebooks();
+};
+</script>
+
+</body>
+</html>
