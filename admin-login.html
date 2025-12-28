@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Login</title>
+
+<style>
+body{
+  background:#12002b;
+  color:#fff;
+  font-family:Arial;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.box{
+  background:#2a0d4f;
+  padding:20px;
+  border-radius:12px;
+  width:320px;
+}
+input,button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+}
+button{
+  background:#00e6a7;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h3>🔐 Admin Login</h3>
+  <input id="email" placeholder="Admin Gmail">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">LOGIN</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
+  authDomain: "olyotaskbot-7019e.firebaseapp.com",
+  projectId: "olyotaskbot-7019e"
+};
+
+const ADMIN_UID = "yTxTrE152iaCzUfmNmjxHanXN372";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.login = ()=>{
+  const email = document.getElementById("email").value;
+  const pass  = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth,email,pass)
+  .then(res=>{
+    if(res.user.uid !== ADMIN_UID){
+      alert("❌ You are not admin");
+      return;
+    }
+    location.href = "admin-panel.html";
+  })
+  .catch(err=>alert(err.message));
+}
+</script>
+
+</body>
+</html>
