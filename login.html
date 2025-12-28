@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Login</title>
@@ -15,11 +15,11 @@ body{
 }
 .card{
   background:#1e003f;
-  padding:20px;
+  padding:25px;
   border-radius:12px;
   width:300px;
-  color:white;
   text-align:center;
+  color:white;
 }
 input{
   width:100%;
@@ -35,6 +35,7 @@ button{
   border:none;
   border-radius:8px;
   font-weight:bold;
+  cursor:pointer;
 }
 .login{background:#00e0a4;}
 .create{background:#6f5cff;}
@@ -53,54 +54,51 @@ button{
   <button class="create" id="createBtn">CREATE ACCOUNT</button>
 </div>
 
-<!-- 🔥 Firebase Modular SDK -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-  import {
-    getAuth,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
-    authDomain: "olyotaskbot-7019e.firebaseapp.com",
-    projectId: "olyotaskbot-7019e",
-    appId: "1:384515918474:web:7535db60c5166639983b73"
-  };
+/* 🔥 তোমার Firebase config */
+const firebaseConfig = {
+  apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
+  authDomain: "olyotaskbot-7019e.firebaseapp.com",
+  projectId: "olyotaskbot-7019e",
+  appId: "1:384515918474:web:7535db60c5166639983b73"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-  const email = document.getElementById("email");
-  const password = document.getElementById("password");
+/* ✅ Session stable করার জন্য */
+await setPersistence(auth, browserLocalPersistence);
 
-  // LOGIN
-  document.getElementById("loginBtn").onclick = () => {
-    signInWithEmailAndPassword(auth, email.value, password.value)
-      .then(() => {
-        alert("Login Success");
-        window.location.href = "index.html";
-      })
-      .catch(err => alert(err.message));
-  };
+const email = document.getElementById("email");
+const password = document.getElementById("password");
 
-  // CREATE ACCOUNT
-  document.getElementById("createBtn").onclick = () => {
-    createUserWithEmailAndPassword(auth, email.value, password.value)
-      .then(() => {
-        alert("Account Created Successfully");
-      })
-      .catch(err => alert(err.message));
-  };
-
-  // Already logged in
-  onAuthStateChanged(auth, user => {
-    if (user) {
+/* LOGIN */
+document.getElementById("loginBtn").onclick = () => {
+  signInWithEmailAndPassword(auth, email.value, password.value)
+    .then(() => {
+      alert("Login Success");
       window.location.href = "index.html";
-    }
-  });
+    })
+    .catch(err => alert(err.message));
+};
+
+/* CREATE ACCOUNT */
+document.getElementById("createBtn").onclick = () => {
+  createUserWithEmailAndPassword(auth, email.value, password.value)
+    .then(() => {
+      alert("Account Created Successfully");
+    })
+    .catch(err => alert(err.message));
+};
 </script>
 
 </body>
