@@ -717,6 +717,41 @@ await updateDoc(userRef,{
 <script src="//libtl.com/sdk.js"
         data-zone="10362750"
         data-sdk="show_10362750">
+
+<script type="module">
+import { auth } from "./firebase.js";
+import { onAuthStateChanged } from
+"https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.replace("login.html");
+  }
+});
+</script>
+<script type="module">
+import { auth } from "./firebase.js";
+import { onAuthStateChanged } from
+"https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+const ADMIN_EMAIL = "youradmin@gmail.com";
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    // Login নাই → login page
+    window.location.replace("login.html");
+    return;
+  }
+
+  // Admin হলে → admin panel
+  if (user.email === ADMIN_EMAIL) {
+    window.location.replace("admin.html");
+  }
+
+  // User হলে → index.html এই থাকবে
+});
+</script>
+
 </script>
 
 
