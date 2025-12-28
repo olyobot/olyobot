@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<title>WhatsApp Buy</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#12002b;
+  color:#fff;
+}
+.header{
+  padding:16px;
+  font-size:22px;
+  font-weight:bold;
+}
+.notice{
+  background:#3a1b6b;
+  margin:12px;
+  padding:12px;
+  border-radius:10px;
+  font-size:14px;
+}
+.item{
+  background:#2a0d4f;
+  margin:10px 12px;
+  padding:14px;
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.buyBtn{
+  background:#25D366;
+  color:#000;
+  border:none;
+  padding:8px 14px;
+  border-radius:20px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.result{
+  margin:12px;
+  background:#3a1b6b;
+  padding:14px;
+  border-radius:12px;
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">WHATSAPP BUY</div>
+
+<div class="notice">
+  প্রতি WhatsApp কিনতে <b>৳20</b> কাটা হবে
+</div>
+
+<div id="waList"></div>
+<div id="resultBox" class="result"></div>
+
+<script type="module">
+/* ========= FIREBASE IMPORT ========= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import {
+  getFirestore, collection, query, where, limit,
+  getDocs, doc, getDoc, updateDoc
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+/* ========= FIREBASE CONFIG ========= */
+const firebaseConfig = {
+  apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
+  authDomain: "olyotaskbot-7019e.firebaseapp.com",
+  projectId: "olyotaskbot-7019e",
+  storageBucket: "olyotaskbot-7019e.firebasestorage.app",
+  messagingSenderId: "384515918474",
+  appId: "1:384515918474:web:7535db60c5166639983b73"
+};
+
+/* ========= INIT ========= */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let uid = "";
+let balance = 0;
+let userEmail = "";
+let userPhone = "";
+let userRef = null;
+
+/* ========= AUTH CHECK ========= */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    alert("আগে লগইন করো");
+    return;
+  }
+
+  uid = user.uid;
+  userEmail = user.email || "";
+  userPhone = user.phoneNumber || "";
+
+  userRef = doc(db, "users", uid);
+  const uSnap = await getDoc(userRef);
+  if (uSnap.exists()) {
+    balance = uSnap.data().balance || 0;
+  }
+
+  loadWhatsapps();
+});
+
+/* ========= LOAD WHATSAPP LIST ========= */
+async function loadWhatsapps() {
+  const q = query(
+    collection(db, "whatsapp_stock"),
+    where("sold", "==", false),
+    limit(10)
+  );
+
+  const snap = await getDocs(q);
+  const list = document.getElementById("waList");
+  list.innerHTML = "";
+
+  if (snap.empty) {
+    list.innerHTML = "<p style='padding:12px;'>❌ কোনো WhatsApp নেই</p>";
+    return;
+  }
+
+  snap.forEach(d => {
+    const data = d.data();
+    const masked = data.login.substring(0,3) + "****";
+
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div>${masked}</div>
+      <button class="buyBtn" onclick="buyWhatsApp('${d.id}')">BUY ৳20</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+/* ========= BUY WHATSAPP ========= */
+window.buyWhatsApp = async function(docId){
+  if (balance < 20) {
+    alert("পর্যাপ্ত ব্যালেন্স নেই");
+    return;
+  }
+
+  const wRef = doc(db, "whatsapp_stock", docId);
+  const snap = await getDoc(wRef);
+
+  if (!snap.exists() || snap.data().sold) {
+    alert("এই WhatsApp আর নেই");
+    loadWhatsapps();
+    return;
+  }
+
+  // balance minus
+  balance -= 20;
+  await updateDoc(userRef, { balance });
+
+  // mark sold + buyer info
+  await updateDoc(wRef, {
+    sold: true,
+    soldTo: uid,
+    buyerEmail: userEmail,
+    buyerPhone: userPhone,
+    soldAt: Date.now()
+  });
+
+  const box = document.getElementById("resultBox");
+  box.style.display = "block";
+  box.innerHTML = `
+    <b>Login:</b> ${snap.data().login}<br>
+    <b>Password:</b> ${snap.data().pass}
+  `;
+
+  alert("✅ ৳20 কাটা হয়েছে");
+  loadWhatsapps();
+};
+</script>
+
+</body>
+</html>
