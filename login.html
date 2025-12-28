@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Login</title>
+
 <style>
 body{
   background:#12002a;
@@ -16,9 +17,9 @@ body{
   background:#1e003f;
   padding:20px;
   border-radius:12px;
-  width:280px;
-  text-align:center;
+  width:300px;
   color:white;
+  text-align:center;
 }
 input{
   width:100%;
@@ -48,51 +49,58 @@ button{
   <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
 
-  <button class="login" onclick="login()">LOGIN</button>
-  <button class="create" onclick="register()">CREATE ACCOUNT</button>
-
-  <p id="msg"></p>
+  <button class="login" id="loginBtn">LOGIN</button>
+  <button class="create" id="createBtn">CREATE ACCOUNT</button>
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<!-- 🔥 Firebase Modular SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-<script>
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT",
-  appId: "YOUR_APP_ID"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
+    authDomain: "olyotaskbot-7019e.firebaseapp.com",
+    projectId: "olyotaskbot-7019e",
+    appId: "1:384515918474:web:7535db60c5166639983b73"
+  };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-// LOGIN
-function login(){
-  auth.signInWithEmailAndPassword(
-    email.value,
-    password.value
-  ).then(()=>{
-    alert("Login Success");
-    location.href="index.html";
-  }).catch(e=>{
-    alert(e.message);
+  const email = document.getElementById("email");
+  const password = document.getElementById("password");
+
+  // LOGIN
+  document.getElementById("loginBtn").onclick = () => {
+    signInWithEmailAndPassword(auth, email.value, password.value)
+      .then(() => {
+        alert("Login Success");
+        window.location.href = "index.html";
+      })
+      .catch(err => alert(err.message));
+  };
+
+  // CREATE ACCOUNT
+  document.getElementById("createBtn").onclick = () => {
+    createUserWithEmailAndPassword(auth, email.value, password.value)
+      .then(() => {
+        alert("Account Created Successfully");
+      })
+      .catch(err => alert(err.message));
+  };
+
+  // Already logged in
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      window.location.href = "index.html";
+    }
   });
-}
-
-// CREATE ACCOUNT
-function register(){
-  auth.createUserWithEmailAndPassword(
-    email.value,
-    password.value
-  ).then(()=>{
-    alert("Account Created");
-  }).catch(e=>{
-    alert(e.message);
-  });
-}
 </script>
 
 </body>
