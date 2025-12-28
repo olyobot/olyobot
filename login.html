@@ -3,34 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <title>Login</title>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
 <style>
 body{
-  margin:0;
+  background:#12002a;
   height:100vh;
   display:flex;
-  align-items:center;
   justify-content:center;
-  background:linear-gradient(135deg,#14002a,#2a0052);
+  align-items:center;
   font-family:sans-serif;
 }
 .card{
-  width:300px;
-  background:#2b0a4f;
+  background:#1e003f;
   padding:20px;
   border-radius:12px;
+  width:280px;
   text-align:center;
-  color:#fff;
+  color:white;
 }
 input{
   width:100%;
   padding:10px;
   margin:6px 0;
-  border-radius:8px;
   border:none;
+  border-radius:6px;
 }
 button{
   width:100%;
@@ -38,19 +33,10 @@ button{
   margin-top:8px;
   border:none;
   border-radius:8px;
-  background:#00e6a8;
   font-weight:bold;
 }
-a{
-  color:#00e6a8;
-  cursor:pointer;
-  display:block;
-  margin-top:10px;
-}
-.msg{
-  margin-top:8px;
-  font-size:13px;
-}
+.login{background:#00e0a4;}
+.create{background:#6f5cff;}
 </style>
 </head>
 
@@ -59,75 +45,53 @@ a{
 <div class="card">
   <h3 id="title">Login</h3>
 
-  <input id="email" placeholder="Email">
+  <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
 
-  <button onclick="submit()">LOGIN</button>
+  <button class="login" onclick="login()">LOGIN</button>
+  <button class="create" onclick="register()">CREATE ACCOUNT</button>
 
-  <a onclick="toggle()" id="toggleText">Create Account</a>
-
-  <div class="msg" id="msg"></div>
+  <p id="msg"></p>
 </div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
 const firebaseConfig = {
-  /* তোমার firebase config */
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT",
+  appId: "YOUR_APP_ID"
 };
+
 firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
-let mode = "login"; // login | register
-
-function toggle(){
-  if(mode==="login"){
-    mode="register";
-    title.innerText="Create Account";
-    toggleText.innerText="Back to Login";
-    document.querySelector("button").innerText="CREATE ACCOUNT";
-    msg.innerText="";
-  }else{
-    mode="login";
-    title.innerText="Login";
-    toggleText.innerText="Create Account";
-    document.querySelector("button").innerText="LOGIN";
-    msg.innerText="";
-  }
+// LOGIN
+function login(){
+  auth.signInWithEmailAndPassword(
+    email.value,
+    password.value
+  ).then(()=>{
+    alert("Login Success");
+    location.href="index.html";
+  }).catch(e=>{
+    alert(e.message);
+  });
 }
 
-function submit(){
-  const email=email.value;
-  const pass=password.value;
-
-  if(mode==="register"){
-    firebase.auth().createUserWithEmailAndPassword(email,pass)
-    .then(()=>{
-      msg.innerText="✅ Account Created Successfully";
-      msg.style.color="#00ffb3";
-      toggle();
-    })
-    .catch(e=>{
-      msg.innerText=e.message;
-      msg.style.color="red";
-    });
-  }else{
-    firebase.auth().signInWithEmailAndPassword(email,pass)
-    .then(res=>{
-      msg.innerText="✅ Login Successful";
-      msg.style.color="#00ffb3";
-
-      const ADMIN_UID="yTxTrE152iaCzUfmNmjxHanXN372";
-      setTimeout(()=>{
-        if(res.user.uid===ADMIN_UID){
-          location.href="admin.html";
-        }else{
-          location.href="index.html";
-        }
-      },800);
-    })
-    .catch(e=>{
-      msg.innerText=e.message;
-      msg.style.color="red";
-    });
-  }
+// CREATE ACCOUNT
+function register(){
+  auth.createUserWithEmailAndPassword(
+    email.value,
+    password.value
+  ).then(()=>{
+    alert("Account Created");
+  }).catch(e=>{
+    alert(e.message);
+  });
 }
 </script>
 
